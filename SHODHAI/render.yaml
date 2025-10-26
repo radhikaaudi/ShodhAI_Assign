@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: coding-contest-backend
+    env: java
+    buildCommand: cd backend && mvn clean package -DskipTests
+    startCommand: java -jar backend/target/coding-contest-platform-0.0.1-SNAPSHOT.jar
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 3306
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+    healthCheckPath: /actuator/health
+
+  - type: web
+    name: coding-contest-frontend
+    env: node
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npm start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: ${BACKEND_URL}/api
+    staticPublishPath: frontend/.next
+

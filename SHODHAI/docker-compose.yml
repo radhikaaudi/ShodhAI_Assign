@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/judge:/tmp/judge
+    depends_on:
+      - db
+    networks:
+      - shodh-network
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8080/api
+    depends_on:
+      - backend
+    networks:
+      - shodh-network
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: codingcontest
+      MYSQL_USER: contestuser
+      MYSQL_PASSWORD: contestpass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - shodh-network
+
+volumes:
+  mysql_data:
+
+networks:
+  shodh-network:
+    driver: bridge

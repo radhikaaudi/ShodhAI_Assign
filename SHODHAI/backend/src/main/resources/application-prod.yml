@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}}
+    driverClassName: org.postgresql.Driver
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.shodh.codingcontest: INFO
+    org.springframework.web: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
